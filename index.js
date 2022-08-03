@@ -11,18 +11,14 @@ const PORT = '3000';
 const readFile = () => fs.readFileSync('./talker.json', 'utf-8');
 
 const readRes = JSON.parse(readFile());
-console.log(readRes[0].id);
-
-function talkers(_req, res) {
-  return res.status(200).json(readRes);
-}
+// console.log(readRes[0].id);
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker', talkers);
+app.get('/talker', (_req, res) => res.status(HTTP_OK_STATUS).json(readRes));
 
 app.get('/talker/:id', (req, res) => {
   const { id } = req.params;
@@ -33,6 +29,10 @@ app.get('/talker/:id', (req, res) => {
   }
   return res.status(HTTP_OK_STATUS).json(talkerId);
 });
+
+/* app.post('', (req, res) => {
+  const {} = req.boby;
+}) */
 
 app.listen(PORT, () => {
   console.log('Online');
