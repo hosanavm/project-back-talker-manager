@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const app = express();
 app.use(bodyParser.json());
@@ -33,9 +34,10 @@ app.get('/talker/:id', (req, res) => {
   return res.status(HTTP_OK_STATUS).json(talkerId);
 });
 
-/* app.post('/login', (req, res) => {
-  const {} = req.boby;
-}) */
+app.post('/login', (req, res) => {
+  const token = crypto.randomBytes(8).toString('hex');
+  res.status(HTTP_OK_STATUS).json({ token });
+});
 
 app.listen(PORT, () => {
   console.log('Online');
