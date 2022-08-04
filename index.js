@@ -50,7 +50,7 @@ const valiTok = (req, res, next) => {
 
 const valiName = (req, res, next) => {
   const { name } = req.body;
-  if (!name) {
+  if (name === undefined || name === '') {
     return res.status(HTTP_ALERT_STATUS).json({ message: 'O campo "name" é obrigatório' });
   }
   if (name.length < 3) {
@@ -95,7 +95,7 @@ const valiWatc = (req, res, next) => {
 
 const valiRate = (req, res, next) => {
   const { talk: { rate } } = req.body;
-  if (!rate) {
+  if (rate === undefined || rate === '') {
     return res.status(HTTP_ALERT_STATUS).json({ message: 'O campo "rate" é obrigatório' });
   }
   if (rate < 1 || rate > 5) {
@@ -131,7 +131,6 @@ app.post('/login', valiEmail, valiPass, (_req, res) => {
   res.status(HTTP_OK_STATUS).json({ token });
 });
 
-// console.log(talkers);
 app.post('/talker', valiTok, valiName, valiAge, valiTalk, valiWatc, valiRate, (req, res) => {
   const { name, age, talk } = req.body;
   const { watchedAt, rate } = talk;
@@ -148,6 +147,26 @@ app.post('/talker', valiTok, valiName, valiAge, valiTalk, valiWatc, valiRate, (r
   talkers.push(talker);
   fs.writeFileSync('talker.json', JSON.stringify(talkers));
   res.status(201).json(talker);
+});
+
+app.put('/talker/:id', valiTok, valiName, valiAge, valiTalk, valiWatc, valiRate, (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+  const { watchedAt, rate } = talk;
+  const talkers = JSON.parse(readFile());
+  const filterEdit = talkers.filter((talker) => talker.id !== Number(id));
+  const talkerEdit = {
+    id: Number(id),
+    name,
+    age,
+    talk: {
+      watchedAt,
+      rate,
+    },
+  };
+  filterEdit.push(talkerEdit);
+  fs.writeFileSync('talker.json', JSON.stringify(filterEdit));
+  res.status(HTTP_OK_STATUS).json(talkerEdit);
 });
 
 app.listen(PORT, () => {
