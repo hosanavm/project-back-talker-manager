@@ -115,6 +115,20 @@ app.get('/talker', (_req, res) => {
   res.status(HTTP_OK_STATUS).json(readRes);
 });
 
+app.get('/talker/search', valiTok, (req, res) => {
+  const readRes = JSON.parse(readFile());
+  const { q } = req.query;
+  if (!q) {
+    return res.status(HTTP_OK_STATUS).json(readRes);
+  }
+
+  const caseName = readRes.filter((talker) => talker.name.toLowerCase().includes(q.toLowerCase()));
+  if (caseName.length === 0) {
+    return res.status(HTTP_OK_STATUS).send();
+  }
+  return res.status(HTTP_OK_STATUS).json(caseName);
+});
+
 app.get('/talker/:id', (req, res) => {
   const readRes = JSON.parse(readFile());
   const { id } = req.params;
