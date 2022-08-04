@@ -169,6 +169,15 @@ app.put('/talker/:id', valiTok, valiName, valiAge, valiTalk, valiWatc, valiRate,
   res.status(HTTP_OK_STATUS).json(talkerEdit);
 });
 
+app.delete('/talker/:id', valiTok, (req, res) => {
+  const { id } = req.params;
+  const talkers = JSON.parse(readFile());
+  const filterEdit = talkers.filter((talker) => talker.id !== Number(id));
+  
+  fs.writeFileSync('talker.json', JSON.stringify(filterEdit));
+  res.status(204).end();
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
